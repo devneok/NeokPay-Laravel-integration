@@ -1,0 +1,1 @@
+<?php declare(strict_types=1); namespace Neok\Pay\Laravel\Facades; use Illuminate\Support\Facades\Facade; use Neok\Pay\Client; final class NeokPay extends Facade { protected static function getFacadeAccessor(): string { return Client::class; } }

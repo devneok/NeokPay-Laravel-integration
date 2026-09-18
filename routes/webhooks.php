@@ -1,0 +1,1 @@
+<?php use Illuminate\Support\Facades\Route; use Neok\Pay\Laravel\Http\Controllers\WebhookController; use Neok\Pay\Laravel\Http\Middleware\VerifyNeokPayWebhook; Route::post(config('neokpay.webhook.path','neokpay/webhook'),WebhookController::class)->middleware(['api',VerifyNeokPayWebhook::class])->name('neokpay.webhook');

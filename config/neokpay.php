@@ -1,0 +1,1 @@
+<?php return ['base_url'=>env('NEOKPAY_BASE_URL','https://pay.neok.me/api/v1'),'api_key'=>env('NEOKPAY_API_KEY'),'webhook_secret'=>env('NEOKPAY_WEBHOOK_SECRET'),'webhook'=>['enabled'=>env('NEOKPAY_WEBHOOK_ENABLED',true),'path'=>env('NEOKPAY_WEBHOOK_PATH','neokpay/webhook'),'timestamp_tolerance'=>(int)env('NEOKPAY_WEBHOOK_TIMESTAMP_TOLERANCE',300),'deduplicate'=>false]];
