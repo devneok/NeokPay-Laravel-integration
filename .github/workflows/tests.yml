@@ -53,6 +53,18 @@ jobs:
       - name: Validate matrix metadata
         working-directory: ${{ runner.temp }}/neokpay-matrix
         run: composer validate --strict
+      # Laravel 11.56.1 has no patched 11.x successor for these advisories:
+      # PKSA-m5cs-t1y6-qpcs, PKSA-3r5d-mb8f-1qw9, PKSA-mdq4-51ck-6kdq.
+      # The test root bypasses blocking ONLY for these IDs, never their audit.
+      # New/other findings still fail; green means compatibility, not security.
+      - name: Report Laravel 11 security advisories
+        if: matrix.laravel == 11
+        working-directory: ${{ runner.temp }}/neokpay-matrix
+        run: |
+          audit_exit=0
+          composer audit --locked --format=json > composer-audit.json || audit_exit=$?
+          cat composer-audit.json
+          php "$GITHUB_WORKSPACE/packages/neokpay-laravel/tests/check-laravel11-audit.php" composer-audit.json "$audit_exit"
       - name: PHPUnit
         working-directory: ${{ runner.temp }}/neokpay-matrix
         run: php vendor/bin/phpunit --do-not-cache-result

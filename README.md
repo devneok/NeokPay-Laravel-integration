@@ -158,6 +158,8 @@ php vendor/bin/phpstan analyse --no-progress
 
 Use a new directory and major 12 or 13 for other runs. Keep artifacts to inspect failures; delete only your explicitly identified test directory afterward. `tests/fresh-app.php /path/to/test-app` additionally checks a disposable installed application using fake credentials and no live API requests.
 
+Use current patched framework releases in production. Laravel 11 compatibility tests require Composer 2.10+ and apply three narrowly scoped advisory exceptions only in the generated test root (see `tests/laravel11-advisories.php`). There is currently no patched Laravel 11 release for these findings. CI runs an unfiltered `composer audit`, reports the known findings, and fails on unexpected findings. A passing compatibility job does **not** certify Laravel 11 as security-clean; published package metadata and consumer security defaults are unchanged.
+
 The harness now simulates SDK `1.0.0-beta.1` metadata only in its temporary path repository; it does not create a tag. Pass `registry` as its third argument after SDK beta publication to install the normal beta dependency without an SDK path repository.
 
 CI uses isolated roots for PHP 8.3/8.4 + Laravel 11/12 and PHP 8.4 + Laravel 13, with Larastan 3.12.1 and PHPStan 2.2.14. Before publication, set `NEOKPAY_SDK_SOURCE=sibling`, `NEOKPAY_SDK_REPOSITORY` to the real owner/repository, and `NEOKPAY_SDK_REF` to the approved commit. After SDK beta publication, set `NEOKPAY_SDK_SOURCE=registry`: the SDK checkout/path workaround is skipped. Workflow dispatch can select the mode. Private sibling repositories require authorized checkout access; no credentials belong in manifests. See the release checklist for the final removal of transitional sibling setup.

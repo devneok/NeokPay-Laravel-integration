@@ -23,7 +23,7 @@ $manifest = [
         'php' => '^8.3',
         'neok/neokpay-php' => '^1.0.0-beta.1@beta',
         'neok/neokpay-laravel' => 'dev-main',
-        'laravel/framework' => '^'.$major.'.0',
+        'laravel/framework' => $major === 11 ? '^11.56.1' : '^'.$major.'.0',
         'orchestra/testbench' => '^'.($major - 2).'.0',
         'phpunit/phpunit' => '^11.5',
     ],
@@ -34,6 +34,18 @@ $manifest = [
     'autoload-dev' => ['psr-4' => ['Neok\\Pay\\Laravel\\Tests\\' => $wrapper.'/tests/']],
     'prefer-stable' => true,
 ];
+if ($major === 11) {
+    // Compatibility, not security certification: no patched Laravel 11 exists
+    // for these advisories. Composer 2.10+ still reports them during audit.
+    $ignores = [];
+    foreach (require __DIR__.'/laravel11-advisories.php' as $id) {
+        $ignores[$id] = [
+            'on-audit' => false,
+            'reason' => 'Isolated Laravel 11 compatibility only; no patched 11.x available. Audit remains mandatory.',
+        ];
+    }
+    $manifest['config']['policy']['advisories']['ignore-id'] = $ignores;
+}
 if (! $registry) {
     // Simulated release metadata only in this root; no tag is created.
     array_unshift($manifest['repositories'], ['type' => 'path', 'url' => $sdk, 'options' => [
