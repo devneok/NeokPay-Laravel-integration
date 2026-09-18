@@ -49,9 +49,9 @@ No static composer.json version is added. Git tags supply release versions. Neve
 
 SDK repository: `https://github.com/devneok/NeokPay-PHP-SDK`. Wrapper repository: `https://github.com/devneok/NeokPay-Laravel-integration`. SDK CI is self-contained.
 
-Before SDK registry publication, wrapper CI checks out public SDK `main` alongside the wrapper. The generated test root simulates `devneok/neokpay-php 1.0.0-beta.2` metadata only; it does not tag the repository. No private checkout token or local repository in the public manifest is required.
+Wrapper CI now installs published `devneok/neokpay-php 1.0.0-beta.2` from Packagist. Only the unpublished wrapper uses a path repository in the generated test root. No sibling SDK checkout or private checkout token is required.
 
-Once the SDK beta is published, authorize a workflow update to skip sibling checkout and pass `registry` as the third argument to `tests/matrix.php`. Verify actual registry-mode resolution before wrapper tagging; path-based simulation is not registry verification.
+The workflow passes `registry` to `tests/matrix.php` and runs `tests/verify-registry-sdk.php` to assert the installed SDK version, approved commit, ZIP source, and absence of SDK path wiring. Review all five hosted job results and their provenance summaries before wrapper tagging. Explicit local SDK development mode remains available but is not release validation.
 
 ## If a beta has a serious issue
 

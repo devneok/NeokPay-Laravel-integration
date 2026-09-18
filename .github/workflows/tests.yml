@@ -23,13 +23,6 @@ jobs:
         with:
           path: packages/neokpay-laravel
           persist-credentials: false
-      - name: Checkout public SDK
-        uses: actions/checkout@v7.0.1
-        with:
-          repository: devneok/NeokPay-PHP-SDK
-          ref: main
-          path: packages/neokpay-php
-          persist-credentials: false
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
@@ -39,17 +32,20 @@ jobs:
       - name: Validate publishable metadata
         run: |
           composer validate --strict --no-check-lock --working-dir=packages/neokpay-laravel
-      - name: Validate sibling SDK metadata
-        run: composer validate --strict --working-dir=packages/neokpay-php
       - name: Generate isolated test root
         env:
           LARAVEL_MAJOR: ${{ matrix.laravel }}
         run: |
-          # Beta metadata/path wiring is confined to this generated test root.
-          php packages/neokpay-laravel/tests/matrix.php "$RUNNER_TEMP/neokpay-matrix" "$LARAVEL_MAJOR"
+          # Only the unpublished wrapper uses a path repository. SDK is from Packagist.
+          php packages/neokpay-laravel/tests/matrix.php "$RUNNER_TEMP/neokpay-matrix" "$LARAVEL_MAJOR" registry
       - name: Install matrix dependencies
         working-directory: ${{ runner.temp }}/neokpay-matrix
         run: composer install --no-interaction --prefer-dist
+      - name: Verify published SDK provenance
+        working-directory: ${{ runner.temp }}/neokpay-matrix
+        run: |
+          composer show devneok/neokpay-php --all
+          php "$GITHUB_WORKSPACE/packages/neokpay-laravel/tests/verify-registry-sdk.php" "$PWD"
       - name: Validate matrix metadata
         working-directory: ${{ runner.temp }}/neokpay-matrix
         run: composer validate --strict

@@ -9,7 +9,7 @@ if (! in_array($major, [11, 12, 13], true) || file_exists($root)) {
     throw new RuntimeException('Choose Laravel 11–13 and a new temporary directory.');
 }
 $wrapper = dirname(__DIR__);
-$registry = ($argv[3] ?? '') === 'registry';
+$registry = ($argv[3] ?? 'registry') === 'registry';
 $sdk = $registry ? null : realpath($argv[3] ?? dirname($wrapper).'/neokpay-php');
 if (! $registry && $sdk === false) {
     throw new RuntimeException('SDK sibling not found.');

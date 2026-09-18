@@ -6,7 +6,7 @@ A thin, stateless Laravel wrapper around `devneok/neokpay-php`. PHP ^8.3; Larave
 
 ## Installation
 
-The packages are not published yet. The following is the intended public workflow once available; controlled testers use the local setup below.
+The SDK beta.2 is published; this Laravel wrapper is not yet tagged or published. The following is the intended public workflow once the wrapper is available; controlled testers use the local setup below.
 
 ```bash
 composer require "devneok/neokpay-laravel:1.0.0-beta.2" "devneok/neokpay-php:1.0.0-beta.2"
@@ -15,7 +15,7 @@ php artisan neokpay:install
 
 The provider auto-discovers and supplies the HTTP client automatically. No manual provider or PSR bindings are needed. The installer publishes `config/neokpay.php`, preserves existing config on subsequent runs, and never edits `.env`.
 
-Specify both packages during beta: a root project's stable policy does not automatically allow the SDK's transitive beta. The exact command above was verified with simulated beta metadata. No global `minimum-stability` change is necessary. For opt-in compatible beta upgrades, require both with `^1.0.0-beta.2@beta`. These commands do not imply the packages are already on Packagist.
+Specify both packages during beta: a root project's stable policy does not automatically allow the SDK's transitive beta, even with `@beta` on the wrapper alone. This was verified using the published SDK and simulated wrapper beta metadata. No global `minimum-stability` change is necessary. For opt-in compatible beta upgrades, require both with `^1.0.0-beta.2@beta`. The wrapper is not yet on Packagist.
 
 Add server-issued credentials to your application's `.env`:
 
@@ -134,16 +134,15 @@ See [SECURITY.md](SECURITY.md), [CHANGELOG.md](CHANGELOG.md) and [RELEASE-CHECKL
 
 ## Local unpublished packages and testing
 
-For controlled testing only, clone both packages into sibling directories. In a **temporary application's root**, configure relative paths (adjust them for that application's location):
+For controlled testing only, clone the unpublished wrapper. In a **temporary application's root**, configure its relative path (adjust for the application's location). The SDK comes from Packagist:
 
 ```bash
-composer config repositories.neok-sdk path ../neokpay-php
 composer config repositories.neok-laravel path ../neokpay-laravel
-composer require 'devneok/neokpay-php:dev-main as 1.0.0' 'devneok/neokpay-laravel:dev-main'
+composer require 'devneok/neokpay-php:1.0.0-beta.2' 'devneok/neokpay-laravel:dev-main'
 php artisan neokpay:install
 ```
 
-This local-only alias satisfies the public `^1.0.0-beta.2` SDK requirement. Its `1.0.0` is only a test solver value, not a stable release or tag; the matrix harness below uses simulated beta metadata instead.
+No SDK alias or local SDK repository is used. Only the unpublished wrapper uses a local path.
 
 To run Testbench without modifying either public manifest, from this package:
 
@@ -152,6 +151,7 @@ php tests/matrix.php /tmp/neokpay-matrix-11 11
 cd /tmp/neokpay-matrix-11
 composer install
 composer validate --strict
+php vendor/devneok/neokpay-laravel/tests/verify-registry-sdk.php "$PWD"
 php vendor/bin/phpunit --do-not-cache-result
 php vendor/bin/phpstan analyse --no-progress
 ```
@@ -160,6 +160,6 @@ Use a new directory and major 12 or 13 for other runs. Keep artifacts to inspect
 
 Use current patched framework releases in production. Laravel 11 compatibility tests require Composer 2.10+ and apply three narrowly scoped advisory exceptions only in the generated test root (see `tests/laravel11-advisories.php`). There is currently no patched Laravel 11 release for these findings. CI runs an unfiltered `composer audit`, reports the known findings, and fails on unexpected findings. A passing compatibility job does **not** certify Laravel 11 as security-clean; published package metadata and consumer security defaults are unchanged.
 
-The harness now simulates SDK `1.0.0-beta.2` metadata only in its temporary path repository; it does not create a tag. Pass `registry` as its third argument after SDK beta publication to install the normal beta dependency without an SDK path repository.
+The harness defaults to registry mode, with explicit beta permission only in the test root. The provenance check requires SDK beta.2 from the approved public GitHub commit and ZIP distribution. An explicit SDK directory as the third argument remains available only for unreleased SDK development; such runs are not registry-release validation.
 
-CI uses isolated roots for PHP 8.3/8.4 + Laravel 11/12 and PHP 8.4 + Laravel 13, with Larastan 3.12.1 and PHPStan 2.2.14. Before publication it checks out public `devneok/NeokPay-PHP-SDK` main as a sibling and simulates `devneok/neokpay-php 1.0.0-beta.2` only in the test root. No repository secret is required. After SDK beta publication, a reviewed workflow change must skip sibling checkout and pass `registry` to the harness. See the release checklist; current path-mode CI does not prove registry availability.
+CI uses isolated roots for PHP 8.3/8.4 + Laravel 11/12 and PHP 8.4 + Laravel 13, with Larastan 3.12.1 and PHPStan 2.2.14. All jobs install the published SDK from Packagist and verify its exact beta.2 version and source. No sibling SDK checkout, SDK path repository, dev alias, or repository secret is used. Provenance appears in job logs and summaries.
