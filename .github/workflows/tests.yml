@@ -3,18 +3,6 @@ on:
   push:
   pull_request:
   workflow_dispatch:
-    inputs:
-      sdk_source:
-        description: Use sibling before publication; registry once SDK beta is available
-        type: choice
-        options: [sibling, registry]
-        default: sibling
-      sdk_repository:
-        description: Unpublished SDK repository (owner/repository)
-        required: false
-      sdk_ref:
-        description: SDK branch or immutable commit
-        default: main
 permissions:
   contents: read
 jobs:
@@ -30,20 +18,16 @@ jobs:
           - {php: '8.4', laravel: 12}
           - {php: '8.4', laravel: 13}
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Laravel integration
+        uses: actions/checkout@v7.0.1
         with:
           path: packages/neokpay-laravel
           persist-credentials: false
-      - name: Require configured SDK source
-        if: (inputs.sdk_source || vars.NEOKPAY_SDK_SOURCE || 'sibling') == 'sibling'
-        env:
-          SDK_REPOSITORY: ${{ inputs.sdk_repository || vars.NEOKPAY_SDK_REPOSITORY || 'devneok/NeokPay-PHP-SDK' }}
-        run: test -n "$SDK_REPOSITORY"
-      - uses: actions/checkout@v4
-        if: (inputs.sdk_source || vars.NEOKPAY_SDK_SOURCE || 'sibling') == 'sibling'
+      - name: Checkout public SDK
+        uses: actions/checkout@v7.0.1
         with:
-          repository: ${{ inputs.sdk_repository || vars.NEOKPAY_SDK_REPOSITORY || 'devneok/NeokPay-PHP-SDK' }}
-          ref: ${{ inputs.sdk_ref || vars.NEOKPAY_SDK_REF || 'main' }}
+          repository: devneok/NeokPay-PHP-SDK
+          ref: main
           path: packages/neokpay-php
           persist-credentials: false
       - uses: shivammathur/setup-php@v2
@@ -56,22 +40,22 @@ jobs:
         run: |
           composer validate --strict --no-check-lock --working-dir=packages/neokpay-laravel
       - name: Validate sibling SDK metadata
-        if: (inputs.sdk_source || vars.NEOKPAY_SDK_SOURCE || 'sibling') == 'sibling'
         run: composer validate --strict --working-dir=packages/neokpay-php
       - name: Generate isolated test root
         env:
-          SDK_SOURCE: ${{ inputs.sdk_source || vars.NEOKPAY_SDK_SOURCE || 'sibling' }}
           LARAVEL_MAJOR: ${{ matrix.laravel }}
         run: |
-          if [ "$SDK_SOURCE" = registry ]; then
-            php packages/neokpay-laravel/tests/matrix.php "$RUNNER_TEMP/neokpay-matrix" "$LARAVEL_MAJOR" registry
-          else
-            php packages/neokpay-laravel/tests/matrix.php "$RUNNER_TEMP/neokpay-matrix" "$LARAVEL_MAJOR"
-          fi
-      - name: Install and test
+          # Beta metadata/path wiring is confined to this generated test root.
+          php packages/neokpay-laravel/tests/matrix.php "$RUNNER_TEMP/neokpay-matrix" "$LARAVEL_MAJOR"
+      - name: Install matrix dependencies
         working-directory: ${{ runner.temp }}/neokpay-matrix
-        run: |
-          composer install --no-interaction --prefer-dist
-          composer validate --strict
-          php vendor/bin/phpunit --do-not-cache-result
-          php vendor/bin/phpstan analyse --no-progress
+        run: composer install --no-interaction --prefer-dist
+      - name: Validate matrix metadata
+        working-directory: ${{ runner.temp }}/neokpay-matrix
+        run: composer validate --strict
+      - name: PHPUnit
+        working-directory: ${{ runner.temp }}/neokpay-matrix
+        run: php vendor/bin/phpunit --do-not-cache-result
+      - name: Larastan
+        working-directory: ${{ runner.temp }}/neokpay-matrix
+        run: php vendor/bin/phpstan analyse --no-progress
