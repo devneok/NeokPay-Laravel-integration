@@ -37,12 +37,12 @@ jobs:
       - name: Require configured SDK source
         if: (inputs.sdk_source || vars.NEOKPAY_SDK_SOURCE || 'sibling') == 'sibling'
         env:
-          SDK_REPOSITORY: ${{ inputs.sdk_repository || vars.NEOKPAY_SDK_REPOSITORY }}
+          SDK_REPOSITORY: ${{ inputs.sdk_repository || vars.NEOKPAY_SDK_REPOSITORY || 'devneok/NeokPay-PHP-SDK' }}
         run: test -n "$SDK_REPOSITORY"
       - uses: actions/checkout@v4
         if: (inputs.sdk_source || vars.NEOKPAY_SDK_SOURCE || 'sibling') == 'sibling'
         with:
-          repository: ${{ inputs.sdk_repository || vars.NEOKPAY_SDK_REPOSITORY }}
+          repository: ${{ inputs.sdk_repository || vars.NEOKPAY_SDK_REPOSITORY || 'devneok/NeokPay-PHP-SDK' }}
           ref: ${{ inputs.sdk_ref || vars.NEOKPAY_SDK_REF || 'main' }}
           path: packages/neokpay-php
           persist-credentials: false
