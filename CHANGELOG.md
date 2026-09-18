@@ -1,8 +1,14 @@
 # Changelog
 
-## 1.0.0-beta.1 — unreleased candidate
+## 1.0.0-beta.2 — unreleased candidate
 
-- Thin integration with the NEOK Pay PHP SDK, requiring ^1.0.0-beta.1.
+- Rename to `devneok/neokpay-laravel` and require `devneok/neokpay-php ^1.0.0-beta.2`.
+- Update Composer version diagnostics and isolated CI metadata; PHP namespaces are unchanged.
+- Supersedes the beta.1 pre-registry plan because its Composer vendor is unavailable. The SDK's existing beta.1 tag remains untouched and must not be submitted to Packagist.
+
+## 1.0.0-beta.1 — superseded pre-registry candidate (not tagged)
+
+- Thin integration with the NEOK Pay PHP SDK, originally requiring ^1.0.0-beta.1.
 - Laravel auto-discovery, publishable configuration and optional facade sharing the injected SDK client.
 - Automatic Guzzle PSR-18 and PSR-17 factory bindings.
 - Repeat-safe installer and local doctor diagnostics using Composer package versions.

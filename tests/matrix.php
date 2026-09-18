@@ -21,15 +21,15 @@ $manifest = [
     'license' => 'MIT',
     'require' => [
         'php' => '^8.3',
-        'neok/neokpay-php' => '^1.0.0-beta.1@beta',
-        'neok/neokpay-laravel' => 'dev-main',
+        'devneok/neokpay-php' => '^1.0.0-beta.2@beta',
+        'devneok/neokpay-laravel' => 'dev-main',
         'laravel/framework' => $major === 11 ? '^11.56.1' : '^'.$major.'.0',
         'orchestra/testbench' => '^'.($major - 2).'.0',
         'phpunit/phpunit' => '^11.5',
     ],
     'require-dev' => ['phpstan/phpstan' => '2.2.14', 'larastan/larastan' => '3.12.1'],
     'repositories' => [
-        ['type' => 'path', 'url' => $wrapper, 'options' => ['symlink' => true, 'versions' => ['neok/neokpay-laravel' => 'dev-main']]],
+        ['type' => 'path', 'url' => $wrapper, 'options' => ['symlink' => true, 'versions' => ['devneok/neokpay-laravel' => 'dev-main']]],
     ],
     'autoload-dev' => ['psr-4' => ['Neok\\Pay\\Laravel\\Tests\\' => $wrapper.'/tests/']],
     'prefer-stable' => true,
@@ -49,7 +49,7 @@ if ($major === 11) {
 if (! $registry) {
     // Simulated release metadata only in this root; no tag is created.
     array_unshift($manifest['repositories'], ['type' => 'path', 'url' => $sdk, 'options' => [
-        'symlink' => true, 'versions' => ['neok/neokpay-php' => '1.0.0-beta.1'],
+        'symlink' => true, 'versions' => ['devneok/neokpay-php' => '1.0.0-beta.2'],
     ]]);
 }
 file_put_contents($root.'/composer.json', json_encode($manifest, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR)."\n");

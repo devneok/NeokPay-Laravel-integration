@@ -69,7 +69,7 @@ final class IntegrationTest extends TestCase
         Artisan::call('neokpay:install');
         self::assertSame(0, Artisan::call('neokpay:doctor'));
         $output = Artisan::output();
-        foreach (['PHP '.PHP_VERSION, 'Laravel '.app()->version(), 'SDK Package', 'HTTP Client', 'Webhook Route', 'neok/neokpay-php:'] as $label) {
+        foreach (['PHP '.PHP_VERSION, 'Laravel '.app()->version(), 'SDK Package', 'HTTP Client', 'Webhook Route', 'devneok/neokpay-php:'] as $label) {
             self::assertStringContainsString($label, $output);
         }
         self::assertStringNotContainsString('test-key', $output);

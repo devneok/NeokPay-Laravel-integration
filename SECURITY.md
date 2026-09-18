@@ -10,7 +10,7 @@ Never submit NEOK Pay API keys, Authorization headers, webhook secrets, Stellar 
 
 ## Supported versions
 
-The planned supported beta line starts at 1.0.0-beta.1; it is not released yet. During beta, install the latest approved beta after review. No stable 1.0 support promise exists yet. Report security findings privately even when using an earlier beta.
+The planned supported beta line starts at 1.0.0-beta.2; it is not released yet. During beta, install the latest approved beta after review. No stable 1.0 support promise exists yet. Report security findings privately even when using an earlier beta.
 
 ## Webhook and payment expectations
 

@@ -20,7 +20,7 @@ final class InstallCommand extends Command
         $major = (int) explode('.', app()->version())[0];
         if (! RuntimeCompatibility::supportsPhp(PHP_VERSION)
             || ! in_array($major, [11, 12, 13], true) || ! class_exists(Client::class)) {
-            $this->error('Requires PHP 8.3+, Laravel 11–13 and neok/neokpay-php.');
+            $this->error('Requires PHP 8.3+, Laravel 11–13 and devneok/neokpay-php.');
 
             return 1;
         }

@@ -1,11 +1,11 @@
 {
-  "name": "neok/neokpay-laravel",
+  "name": "devneok/neokpay-laravel",
   "description": "Laravel integration for NEOK Pay.",
   "type": "library",
   "license": "MIT",
   "require": {
     "php": "^8.3",
-    "neok/neokpay-php": "^1.0.0-beta.1",
+    "devneok/neokpay-php": "^1.0.0-beta.2",
     "guzzlehttp/guzzle": "^7.0",
     "guzzlehttp/psr7": "^2.0",
     "illuminate/console": "^11.0 || ^12.0 || ^13.0",

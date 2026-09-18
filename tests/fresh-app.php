@@ -48,7 +48,7 @@ config(['neokpay.api_key' => 'fake-certification-key', 'neokpay.webhook_secret' 
 $check(Artisan::call('neokpay:doctor') === 0, 'doctor configured');
 $output = Artisan::output();
 $check(! str_contains($output, 'fake-certification-'), 'doctor redacts credentials');
-foreach (['neok/neokpay-php', 'neok/neokpay-laravel'] as $package) {
+foreach (['devneok/neokpay-php', 'devneok/neokpay-laravel'] as $package) {
     $version = InstalledVersions::getPrettyVersion($package);
     $check(is_string($version) && str_contains($output, $package.': '.$version), 'doctor reports installed '.$package.' version');
 }

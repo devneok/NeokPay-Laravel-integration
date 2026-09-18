@@ -42,7 +42,7 @@ final class DoctorCommand extends Command
         foreach ($checks as $name => $pass) {
             $this->line(str_pad($name, 28).($pass ? 'PASS' : 'MISSING / INVALID'));
         }
-        foreach (['neok/neokpay-laravel', 'neok/neokpay-php'] as $package) {
+        foreach (['devneok/neokpay-laravel', 'devneok/neokpay-php'] as $package) {
             $version = InstalledVersions::isInstalled($package)
                 ? InstalledVersions::getPrettyVersion($package) : null;
             $this->line($package.': '.($version ?? 'development / unavailable'));
